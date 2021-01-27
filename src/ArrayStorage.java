@@ -35,7 +35,7 @@ public class ArrayStorage {
             Resume resume = storage[i];
 
             if (resume.uuid.equals(uuid)) {
-                System.arraycopy(storage, i + 1, storage, i, storage.length - 1 - i);
+                System.arraycopy(storage, i + 1, storage, i, size - 1);
                 size--;
                 break;
             }
