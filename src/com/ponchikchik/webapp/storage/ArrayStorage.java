@@ -8,28 +8,28 @@ import java.util.Arrays;
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    private final Resume[] storage = new Resume[10000];
+    private final Resume[] storage = new Resume[10_000];
     private int size = 0;
 
     public void clear() {
-        Arrays.fill(storage, null);
+        Arrays.fill(storage, 0, size - 1, null);
         size = 0;
     }
 
-    public void update(Resume resume, String newUuid) {
-        Resume updateResume = findResume(resume.getUuid());
+    public void update(Resume resume) {
+        int index = findResumeIndex(resume.getUuid());
 
-        if (updateResume != null) {
-            updateResume.setUuid(newUuid);
+        if (index != -1) {
+            storage[index] = resume;
         } else {
             System.out.println("Error: Resume not found");
         }
     }
 
     public void save(Resume resume) {
-        Resume resumeInStorage = findResume(resume.getUuid());
+        int index = findResumeIndex(resume.getUuid());
 
-        if (resumeInStorage != null) {
+        if (index != -1) {
             System.out.println("Error: You can't create duplicate resume");
         } else if (size == storage.length) {
             System.out.println("Error: Storage overflow");
@@ -40,31 +40,24 @@ public class ArrayStorage {
     }
 
     public Resume get(String uuid) {
-        Resume resume = findResume(uuid);
+        int index = findResumeIndex(uuid);
 
-        if (resume == null) {
-            System.out.println("Error: Resume not found");
+        if (index != -1) {
+            return storage[index];
         }
 
-        return resume;
-
+        System.out.println("Error: Resume not found");
+        return null;
     }
 
     public void delete(String uuid) {
-        Resume deleteResume = findResume(uuid);
+        int index = findResumeIndex(uuid);
 
-        if (deleteResume == null) {
+        if (index == -1) {
             System.out.println("Error: Resume not found");
         } else {
-            for (int i = 0; i < size; i++) {
-                Resume resume = storage[i];
-
-                if (resume.getUuid().equals(uuid)) {
-                    System.arraycopy(storage, i + 1, storage, i, size - 1);
-                    size--;
-                    break;
-                }
-            }
+            System.arraycopy(storage, index + 1, storage, index, size - 1);
+            size--;
         }
     }
 
@@ -80,15 +73,15 @@ public class ArrayStorage {
     }
 
 
-    private Resume findResume(String uuid) {
+    private int findResumeIndex(String uuid) {
         for (int i = 0; i < size; i++) {
             Resume resume = storage[i];
 
             if (resume.getUuid().equals(uuid)) {
-                return resume;
+                return i;
             }
         }
 
-        return null;
+        return -1;
     }
 }
