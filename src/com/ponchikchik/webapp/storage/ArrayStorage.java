@@ -12,7 +12,7 @@ public class ArrayStorage {
     private int size = 0;
 
     public void clear() {
-        Arrays.fill(storage, 0, size - 1, null);
+        Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
@@ -22,7 +22,7 @@ public class ArrayStorage {
         if (index != -1) {
             storage[index] = resume;
         } else {
-            System.out.println("Error: Resume not found");
+            System.out.println("Error: Resume " + resume.getUuid() + " not found");
         }
     }
 
@@ -30,7 +30,7 @@ public class ArrayStorage {
         int index = findResumeIndex(resume.getUuid());
 
         if (index != -1) {
-            System.out.println("Error: You can't create duplicate resume");
+            System.out.println("Error: You can't create duplicate resume " + resume.getUuid());
         } else if (size == storage.length) {
             System.out.println("Error: Storage overflow");
         } else {
@@ -46,7 +46,7 @@ public class ArrayStorage {
             return storage[index];
         }
 
-        System.out.println("Error: Resume not found");
+        System.out.println("Error: Resume " + uuid + " not found");
         return null;
     }
 
@@ -54,7 +54,7 @@ public class ArrayStorage {
         int index = findResumeIndex(uuid);
 
         if (index == -1) {
-            System.out.println("Error: Resume not found");
+            System.out.println("Error: Resume " + uuid + " not found");
         } else {
             System.arraycopy(storage, index + 1, storage, index, size - 1);
             size--;
@@ -65,7 +65,7 @@ public class ArrayStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     public Resume[] getAll() {
-        return Arrays.copyOfRange(storage, 0, size);
+        return Arrays.copyOf(storage, size);
     }
 
     public int size() {
@@ -75,9 +75,7 @@ public class ArrayStorage {
 
     private int findResumeIndex(String uuid) {
         for (int i = 0; i < size; i++) {
-            Resume resume = storage[i];
-
-            if (resume.getUuid().equals(uuid)) {
+            if (storage[i].getUuid().equals(uuid)) {
                 return i;
             }
         }
