@@ -4,19 +4,13 @@ import com.ponchikchik.webapp.model.Resume;
 
 import java.util.Arrays;
 
-/**
- * Array based storage for Resumes
- */
-public class ArrayStorage extends AbstractArrayStorage {
+public class SortedArrayStorage extends AbstractArrayStorage {
     @Override
     protected int findResumeIndex(String uuid) {
-        for (int i = 0; i < size; i++) {
-            if (storage[i].getUuid().equals(uuid)) {
-                return i;
-            }
-        }
+        Resume searchKey = new Resume();
+        searchKey.setUuid(uuid);
 
-        return -1;
+        return Arrays.binarySearch(storage, 0, size, searchKey);
     }
 
     @Override
@@ -26,6 +20,7 @@ public class ArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected void insertItem(int index, Resume resume) {
-        storage[size] = resume;
+        int insertIndex = -index - 1;
+        storage[insertIndex] = resume;
     }
 }
