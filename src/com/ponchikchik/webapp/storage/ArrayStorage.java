@@ -20,12 +20,13 @@ public class ArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void removeItem(int index) {
-        System.arraycopy(storage, index + 1, storage, index, size - 1);
+    protected void removeResume(int index) {
+        storage[index] = storage[size - 1];
+        storage[size - 1] = null;
     }
 
     @Override
-    protected void insertItem(int index, Resume resume) {
+    protected void insertResume(int index, Resume resume) {
         storage[size] = resume;
     }
 }
