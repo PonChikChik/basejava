@@ -18,9 +18,8 @@ public class MainReflection {
         field.set(resume, "new_uuid");
         // TODO : invoke r.toString via reflection
 
-        Method method;
         try {
-            method = resumeClass.getMethod("toString");
+            Method method = resumeClass.getMethod("toString");
             Object result = method.invoke(resume);
             System.out.println(result);
         } catch (NoSuchMethodException | InvocationTargetException e) {
