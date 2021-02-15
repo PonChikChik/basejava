@@ -4,6 +4,7 @@ import com.ponchikchik.webapp.exception.ExistStorageException;
 import com.ponchikchik.webapp.exception.NotExistStorageException;
 import com.ponchikchik.webapp.exception.StorageException;
 import com.ponchikchik.webapp.model.Resume;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import java.util.UUID;
 
 import static com.ponchikchik.webapp.storage.AbstractArrayStorage.STORAGE_LIMIT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public abstract class AbstractArrayStorageTest {
     private static final String UUID_1 = UUID.randomUUID().toString();
@@ -26,12 +28,16 @@ public abstract class AbstractArrayStorageTest {
 
     @BeforeEach
     public void setUp() {
-        storage.clear();
         storage.save(new Resume(UUID_1));
         storage.save(new Resume(UUID_2));
         storage.save(new Resume(UUID_3));
 
-        size += 3;
+        size = 3;
+    }
+
+    @AfterEach
+    public void tearDown() {
+        storage.clear();
     }
 
     @Test
@@ -39,7 +45,7 @@ public abstract class AbstractArrayStorageTest {
         storage.clear();
         size = 0;
 
-        assetsStorageSize(size);
+        assetsStorageSize();
     }
 
     @Test
@@ -48,7 +54,12 @@ public abstract class AbstractArrayStorageTest {
         storage.update(resume);
 
         assetsStorageResume(resume);
-        assetsStorageSize(size);
+        assetsStorageSize();
+    }
+
+    @Test
+    public void updateResumeNotExist() {
+        assertThrows(NotExistStorageException.class, () -> storage.update(new Resume("dummy")));
     }
 
     @Test
@@ -58,7 +69,28 @@ public abstract class AbstractArrayStorageTest {
 
         assetsStorageResume(resume);
         size++;
-        assetsStorageSize(size);
+        assetsStorageSize();
+    }
+
+    @Test
+    public void saveResumeExist() {
+        assertThrows(ExistStorageException.class, () -> storage.save(new Resume(UUID_1)));
+    }
+
+    @Test
+    public void assertStorageOverflow() {
+        try {
+            int counter = size;
+
+            while (counter != STORAGE_LIMIT) {
+                storage.save(new Resume());
+                counter++;
+            }
+        } catch (StorageException e) {
+            Assertions.fail("Storage overflow too early", e);
+        }
+
+        assertThrows(StorageException.class, () -> storage.save(new Resume()));
     }
 
     @Test
@@ -69,13 +101,22 @@ public abstract class AbstractArrayStorageTest {
     }
 
     @Test
+    public void getResumeNotExist() {
+        assertThrows(NotExistStorageException.class, () -> storage.get("dummy"));
+    }
+
+    @Test
     public void delete() {
-        Assertions.assertThrows(NotExistStorageException.class, () -> {
-            storage.delete(UUID_1);
-            size--;
-            assetsStorageSize(size);
-            storage.get(UUID_1);
-        });
+        size--;
+        storage.delete(UUID_1);
+        assetsStorageSize();
+
+        assertThrows(NotExistStorageException.class, () -> storage.get(UUID_1));
+    }
+
+    @Test
+    public void deleteResumeNotExist() {
+        assertThrows(NotExistStorageException.class, () -> storage.delete("dummy"));
     }
 
     @Test
@@ -89,49 +130,10 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void size() {
-        assetsStorageSize(size);
+        assetsStorageSize();
     }
 
-    @Test
-    public void getResumeNotExist() {
-        Assertions.assertThrows(NotExistStorageException.class, () -> storage.get("dummy"));
-    }
-
-    @Test
-    public void deleteResumeNotExist() {
-        Assertions.assertThrows(NotExistStorageException.class, () -> storage.delete("dummy"));
-    }
-
-    @Test
-    public void updateResumeNotExist() {
-        Assertions.assertThrows(NotExistStorageException.class, () -> storage.update(new Resume("dummy")));
-    }
-
-    @Test
-    public void saveResumeExist() {
-        Assertions.assertThrows(ExistStorageException.class, () -> storage.save(new Resume(UUID_1)));
-    }
-
-    @Test
-    public void assertStorageOverflow() {
-        Assertions.assertThrows(StorageException.class, () -> {
-            try {
-                int counter = size;
-
-                while (counter != STORAGE_LIMIT) {
-                    storage.save(new Resume());
-                    counter++;
-                }
-            } catch (StorageException e) {
-                Assertions.fail("Storage overflow too early", e);
-            }
-
-            storage.save(new Resume());
-            storage.clear();
-        });
-    }
-
-    private void assetsStorageSize(int size) {
+    private void assetsStorageSize() {
         assertEquals(size, storage.size());
     }
 
