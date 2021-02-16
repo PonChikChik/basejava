@@ -21,11 +21,11 @@ abstract class AbstractArrayStorage implements Storage {
     public void update(Resume resume) {
         int index = findResumeIndex(resume.getUuid());
 
-        if (index >= 0) {
-            storage[index] = resume;
-        } else {
+        if (index < 0) {
             throw new NotExistStorageException(resume.getUuid());
         }
+
+        storage[index] = resume;
     }
 
     public void save(Resume resume) {
@@ -35,10 +35,10 @@ abstract class AbstractArrayStorage implements Storage {
             throw new ExistStorageException(resume.getUuid());
         } else if (size == STORAGE_LIMIT) {
             throw new StorageException("Storage overflow", resume.getUuid());
-        } else {
-            insertResume(index, resume);
-            size++;
         }
+
+        insertResume(index, resume);
+        size++;
     }
 
     public Resume get(String uuid) {
@@ -56,11 +56,11 @@ abstract class AbstractArrayStorage implements Storage {
 
         if (index < 0) {
             throw new NotExistStorageException(uuid);
-        } else {
-            removeResume(index);
-            storage[size - 1] = null;
-            size--;
         }
+
+        removeResume(index);
+        storage[size - 1] = null;
+        size--;
     }
 
     /**

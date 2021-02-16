@@ -12,8 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.UUID;
 
 import static com.ponchikchik.webapp.storage.AbstractArrayStorage.STORAGE_LIMIT;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class AbstractArrayStorageTest {
     private static final String UUID_1 = UUID.randomUUID().toString();
@@ -45,7 +44,7 @@ public abstract class AbstractArrayStorageTest {
         storage.clear();
         size = 0;
 
-        assetsStorageSize();
+        assetsSize();
     }
 
     @Test
@@ -53,8 +52,8 @@ public abstract class AbstractArrayStorageTest {
         Resume resume = new Resume(UUID_1);
         storage.update(resume);
 
-        assetsStorageResume(resume);
-        assetsStorageSize();
+        assetsResume(resume);
+        assetsSize();
     }
 
     @Test
@@ -67,9 +66,9 @@ public abstract class AbstractArrayStorageTest {
         Resume resume = new Resume();
         storage.save(resume);
 
-        assetsStorageResume(resume);
+        assetsResume(resume);
         size++;
-        assetsStorageSize();
+        assetsSize();
     }
 
     @Test
@@ -95,9 +94,9 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void get() {
-        assetsStorageResume(new Resume(UUID_1));
-        assetsStorageResume(new Resume(UUID_2));
-        assetsStorageResume(new Resume(UUID_3));
+        assetsResume(new Resume(UUID_1));
+        assetsResume(new Resume(UUID_2));
+        assetsResume(new Resume(UUID_3));
     }
 
     @Test
@@ -107,9 +106,9 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void delete() {
-        size--;
         storage.delete(UUID_1);
-        assetsStorageSize();
+        size--;
+        assetsSize();
 
         assertThrows(NotExistStorageException.class, () -> storage.get(UUID_1));
     }
@@ -123,21 +122,19 @@ public abstract class AbstractArrayStorageTest {
     public void getAll() {
         Resume[] allResumes = storage.getAll();
 
-        for (Resume resume : allResumes) {
-            assetsStorageResume(resume);
-        }
+        assertArrayEquals(allResumes, storage.getAll());
     }
 
     @Test
     public void size() {
-        assetsStorageSize();
+        assetsSize();
     }
 
-    private void assetsStorageSize() {
+    private void assetsSize() {
         assertEquals(size, storage.size());
     }
 
-    private void assetsStorageResume(Resume resume) {
+    private void assetsResume(Resume resume) {
         assertEquals(resume, storage.get(resume.getUuid()));
     }
 }
