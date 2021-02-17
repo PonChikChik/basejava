@@ -1,5 +1,8 @@
 package com.ponchikchik.webapp.storage;
 
+import com.ponchikchik.webapp.exception.ExistStorageException;
+import com.ponchikchik.webapp.exception.NotExistStorageException;
+import com.ponchikchik.webapp.exception.StorageException;
 import com.ponchikchik.webapp.model.Resume;
 
 import java.util.Arrays;
@@ -18,32 +21,31 @@ abstract class AbstractArrayStorage implements Storage {
     public void update(Resume resume) {
         int index = findResumeIndex(resume.getUuid());
 
-        if (index >= 0) {
-            storage[index] = resume;
-        } else {
-            System.out.println("Error: Resume " + resume.getUuid() + " not found");
+        if (index < 0) {
+            throw new NotExistStorageException(resume.getUuid());
         }
+
+        storage[index] = resume;
     }
 
     public void save(Resume resume) {
         int index = findResumeIndex(resume.getUuid());
 
         if (index >= 0) {
-            System.out.println("Error: You can't create duplicate resume " + resume.getUuid());
+            throw new ExistStorageException(resume.getUuid());
         } else if (size == STORAGE_LIMIT) {
-            System.out.println("Error: Storage overflow");
-        } else {
-            insertResume(index, resume);
-            size++;
+            throw new StorageException("Storage overflow", resume.getUuid());
         }
+
+        insertResume(index, resume);
+        size++;
     }
 
     public Resume get(String uuid) {
         int index = findResumeIndex(uuid);
 
         if (index < 0) {
-            System.out.println("Error: Resume " + uuid + " not found");
-            return null;
+            throw new NotExistStorageException(uuid);
         }
 
         return storage[index];
@@ -53,12 +55,12 @@ abstract class AbstractArrayStorage implements Storage {
         int index = findResumeIndex(uuid);
 
         if (index < 0) {
-            System.out.println("Error: Resume " + uuid + " not found");
-        } else {
-            removeResume(index);
-            storage[size - 1] = null;
-            size--;
+            throw new NotExistStorageException(uuid);
         }
+
+        removeResume(index);
+        storage[size - 1] = null;
+        size--;
     }
 
     /**
