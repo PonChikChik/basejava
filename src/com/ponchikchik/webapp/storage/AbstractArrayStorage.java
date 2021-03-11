@@ -7,7 +7,7 @@ import com.ponchikchik.webapp.model.Resume;
 
 import java.util.Arrays;
 
-abstract class AbstractArrayStorage implements Storage {
+abstract class AbstractArrayStorage extends AbstractStorage {
     protected static final int STORAGE_LIMIT = 10_000;
 
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
@@ -18,9 +18,8 @@ abstract class AbstractArrayStorage implements Storage {
         size = 0;
     }
 
-    public void update(Resume resume) {
-        int index = findResumeIndex(resume.getUuid());
-
+    @Override
+    protected void doUpdate(int index, Resume resume) {
         if (index < 0) {
             throw new NotExistStorageException(resume.getUuid());
         }
@@ -28,9 +27,8 @@ abstract class AbstractArrayStorage implements Storage {
         storage[index] = resume;
     }
 
-    public void save(Resume resume) {
-        int index = findResumeIndex(resume.getUuid());
-
+    @Override
+    protected void doSave(int index, Resume resume) {
         if (index >= 0) {
             throw new ExistStorageException(resume.getUuid());
         } else if (size == STORAGE_LIMIT) {
@@ -41,9 +39,8 @@ abstract class AbstractArrayStorage implements Storage {
         size++;
     }
 
-    public Resume get(String uuid) {
-        int index = findResumeIndex(uuid);
-
+    @Override
+    protected Resume doGet(int index, String uuid) {
         if (index < 0) {
             throw new NotExistStorageException(uuid);
         }
@@ -51,9 +48,8 @@ abstract class AbstractArrayStorage implements Storage {
         return storage[index];
     }
 
-    public void delete(String uuid) {
-        int index = findResumeIndex(uuid);
-
+    @Override
+    protected void doDelete(int index, String uuid) {
         if (index < 0) {
             throw new NotExistStorageException(uuid);
         }
@@ -73,8 +69,6 @@ abstract class AbstractArrayStorage implements Storage {
     public int size() {
         return size;
     }
-
-    protected abstract int findResumeIndex(String uuid);
 
     protected abstract void removeResume(int index);
 
