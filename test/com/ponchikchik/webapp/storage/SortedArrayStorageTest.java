@@ -1,6 +1,6 @@
 package com.ponchikchik.webapp.storage;
 
-class SortedArrayStorageTest extends AbstractStorageTest {
+class SortedArrayStorageTest extends AbstractArrayStorageTest {
     protected SortedArrayStorageTest() {
         super(new SortedArrayStorage());
     }

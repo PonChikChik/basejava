@@ -2,22 +2,19 @@ package com.ponchikchik.webapp.storage;
 
 import com.ponchikchik.webapp.exception.ExistStorageException;
 import com.ponchikchik.webapp.exception.NotExistStorageException;
-import com.ponchikchik.webapp.exception.StorageException;
 import com.ponchikchik.webapp.model.Resume;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static com.ponchikchik.webapp.storage.AbstractArrayStorage.STORAGE_LIMIT;
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class AbstractStorageTest {
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
-    private final Storage storage;
-    private int size = 0;
+    protected final Storage storage;
+    protected int size = 0;
 
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -72,22 +69,6 @@ public abstract class AbstractStorageTest {
     @Test
     public void saveResumeExist() {
         assertThrows(ExistStorageException.class, () -> storage.save(new Resume(UUID_1)));
-    }
-
-    @Test
-    public void assertStorageOverflow() {
-        try {
-            int counter = size;
-
-            while (counter != STORAGE_LIMIT) {
-                storage.save(new Resume());
-                counter++;
-            }
-        } catch (StorageException e) {
-            Assertions.fail("Storage overflow too early", e);
-        }
-
-        assertThrows(StorageException.class, () -> storage.save(new Resume()));
     }
 
     @Test
