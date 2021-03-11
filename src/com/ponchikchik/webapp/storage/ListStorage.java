@@ -1,14 +1,12 @@
 package com.ponchikchik.webapp.storage;
 
-import com.ponchikchik.webapp.exception.ExistStorageException;
-import com.ponchikchik.webapp.exception.NotExistStorageException;
 import com.ponchikchik.webapp.model.Resume;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ListStorage extends AbstractStorage {
-    protected List<Resume> storage = new ArrayList<>();
+    private final List<Resume> storage = new ArrayList<>();
 
     @Override
     public void clear() {
@@ -32,19 +30,11 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected void doUpdate(int index, Resume resume) {
-        if (index < 0) {
-            throw new NotExistStorageException(resume.getUuid());
-        }
-
         storage.set(index, resume);
     }
 
     @Override
     protected void doSave(int index, Resume resume) {
-        if (index >= 0) {
-            throw new ExistStorageException(resume.getUuid());
-        }
-
         storage.add(resume);
     }
 

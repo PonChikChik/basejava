@@ -1,14 +1,17 @@
 package com.ponchikchik.webapp.storage;
 
+import com.ponchikchik.webapp.exception.ExistStorageException;
 import com.ponchikchik.webapp.exception.NotExistStorageException;
 import com.ponchikchik.webapp.model.Resume;
 
 public abstract class AbstractStorage implements Storage {
-    protected Storage storage;
-
     @Override
     public void update(Resume resume) {
         int index = findResumeIndex(resume.getUuid());
+
+        if (index < 0) {
+            throw new NotExistStorageException(resume.getUuid());
+        }
 
         doUpdate(index, resume);
     }
@@ -16,6 +19,10 @@ public abstract class AbstractStorage implements Storage {
     @Override
     public void save(Resume resume) {
         int index = findResumeIndex(resume.getUuid());
+
+        if (index >= 0) {
+            throw new ExistStorageException(resume.getUuid());
+        }
 
         doSave(index, resume);
     }
