@@ -1,7 +1,5 @@
 package com.ponchikchik.webapp.storage;
 
-import com.ponchikchik.webapp.exception.ExistStorageException;
-import com.ponchikchik.webapp.exception.NotExistStorageException;
 import com.ponchikchik.webapp.exception.StorageException;
 import com.ponchikchik.webapp.model.Resume;
 
