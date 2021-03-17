@@ -2,12 +2,11 @@ package com.ponchikchik.webapp.storage;
 
 import com.ponchikchik.webapp.model.Resume;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class MapStorage extends AbstractStorage {
-    private final Map<Integer, Resume> storage = new HashMap<>();
-    private int mapKey = 0;
+    private final Map<String, Resume> storage = new LinkedHashMap();
 
     @Override
     public void clear() {
@@ -25,35 +24,38 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected int findResumeIndex(String uuid) {
-        for (Map.Entry<Integer, Resume> entry : storage.entrySet()) {
-            if (entry.getValue().getUuid().equals(uuid)) {
-                return entry.getKey();
-            }
+    protected Object findResumeIndex(String uuid) {
+        Resume searchResume = storage.get(uuid);
+
+        if (searchResume != null) {
+            return storage.get(uuid).getUuid();
         }
 
-        return -1;
+        return null;
     }
 
     @Override
-    protected void doUpdate(int index, Resume resume) {
-        storage.put(index, resume);
+    protected void doUpdate(Object searchKey, Resume resume) {
+        storage.put((String) searchKey, resume);
     }
 
     @Override
-    protected void doSave(int index, Resume resume) {
-        storage.put(mapKey, resume);
-        mapKey++;
+    protected void doSave(Object searchKey, Resume resume) {
+        storage.put(resume.getUuid(), resume);
     }
 
     @Override
-    protected Resume doGet(int index, String uuid) {
-        return storage.get(index);
+    protected Resume doGet(Object searchKey, String uuid) {
+        return storage.get((String) searchKey);
     }
 
     @Override
-    protected void doDelete(int index, String uuid) {
-        storage.remove(index);
-        mapKey--;
+    protected void doDelete(Object searchKey, String uuid) {
+        storage.remove((String) searchKey);
+    }
+
+    @Override
+    protected boolean isExist(Object searchKey) {
+        return storage.get((String) searchKey) != null;
     }
 }
