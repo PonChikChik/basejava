@@ -7,34 +7,30 @@ import com.ponchikchik.webapp.model.Resume;
 public abstract class AbstractStorage implements Storage {
     @Override
     public void update(Resume resume) {
-        Object searchKey = getSearchKeyOrNotExistStorage(resume.getUuid());
-
+        Object searchKey = getSearchKeyIfNotExist(resume.getUuid());
         doUpdate(searchKey, resume);
     }
 
     @Override
     public void save(Resume resume) {
-        Object searchKey = getSearchKeyOrExistStorage(resume.getUuid());
-
+        Object searchKey = getSearchKeyIfExist(resume.getUuid());
         doSave(searchKey, resume);
     }
 
     @Override
     public Resume get(String uuid) {
-        Object searchKey = getSearchKeyOrNotExistStorage(uuid);
-
+        Object searchKey = getSearchKeyIfNotExist(uuid);
         return doGet(searchKey, uuid);
     }
 
     @Override
     public void delete(String uuid) {
-        Object searchKey = getSearchKeyOrNotExistStorage(uuid);
-
+        Object searchKey = getSearchKeyIfNotExist(uuid);
         doDelete(searchKey, uuid);
     }
 
-    private Object getSearchKeyOrNotExistStorage(String uuid) {
-        Object searchKey = findResumeIndex(uuid);
+    private Object getSearchKeyIfNotExist(String uuid) {
+        Object searchKey = findSearchKey(uuid);
 
         if (!isExist(searchKey)) {
             throw new NotExistStorageException(uuid);
@@ -43,8 +39,8 @@ public abstract class AbstractStorage implements Storage {
         return searchKey;
     }
 
-    private Object getSearchKeyOrExistStorage(String uuid) {
-        Object searchKey = findResumeIndex(uuid);
+    private Object getSearchKeyIfExist(String uuid) {
+        Object searchKey = findSearchKey(uuid);
 
         if (isExist(searchKey)) {
             throw new ExistStorageException(uuid);
@@ -53,7 +49,7 @@ public abstract class AbstractStorage implements Storage {
         return searchKey;
     }
 
-    protected abstract Object findResumeIndex(String uuid);
+    protected abstract Object findSearchKey(String uuid);
 
     protected abstract void doUpdate(Object searchKey, Resume resume);
 
