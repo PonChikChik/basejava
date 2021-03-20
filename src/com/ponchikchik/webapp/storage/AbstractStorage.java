@@ -7,29 +7,29 @@ import com.ponchikchik.webapp.model.Resume;
 public abstract class AbstractStorage implements Storage {
     @Override
     public void update(Resume resume) {
-        Object searchKey = getSearchKeyIfNotExist(resume.getUuid());
+        Object searchKey = getSearchKeyIfExist(resume.getUuid());
         doUpdate(searchKey, resume);
     }
 
     @Override
     public void save(Resume resume) {
-        Object searchKey = getSearchKeyIfExist(resume.getUuid());
+        Object searchKey = getSearchKeyIfNotExist(resume.getUuid());
         doSave(searchKey, resume);
     }
 
     @Override
     public Resume get(String uuid) {
-        Object searchKey = getSearchKeyIfNotExist(uuid);
+        Object searchKey = getSearchKeyIfExist(uuid);
         return doGet(searchKey, uuid);
     }
 
     @Override
     public void delete(String uuid) {
-        Object searchKey = getSearchKeyIfNotExist(uuid);
+        Object searchKey = getSearchKeyIfExist(uuid);
         doDelete(searchKey, uuid);
     }
 
-    private Object getSearchKeyIfNotExist(String uuid) {
+    private Object getSearchKeyIfExist(String uuid) {
         Object searchKey = findSearchKey(uuid);
 
         if (!isExist(searchKey)) {
@@ -39,7 +39,7 @@ public abstract class AbstractStorage implements Storage {
         return searchKey;
     }
 
-    private Object getSearchKeyIfExist(String uuid) {
+    private Object getSearchKeyIfNotExist(String uuid) {
         Object searchKey = findSearchKey(uuid);
 
         if (isExist(searchKey)) {
