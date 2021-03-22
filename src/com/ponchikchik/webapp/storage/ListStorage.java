@@ -3,6 +3,8 @@ package com.ponchikchik.webapp.storage;
 import com.ponchikchik.webapp.model.Resume;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ListStorage extends AbstractStorage {
@@ -14,18 +16,19 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume[] getAll() {
-        return storage.toArray(new Resume[]{});
-    }
-
-    @Override
     public int size() {
         return storage.size();
     }
 
     @Override
     protected Object findSearchKey(String uuid) {
-        return storage.indexOf(new Resume(uuid));
+        for (int i = 0; i < storage.size(); i++) {
+            if (storage.get(i).getUuid().equals(uuid)) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     @Override
@@ -51,5 +54,10 @@ public class ListStorage extends AbstractStorage {
     @Override
     protected boolean isExist(Object searchKey) {
         return (int) searchKey >= 0;
+    }
+
+    @Override
+    protected List<Resume> doCopyAllResumes() {
+        return new ArrayList<>(storage);
     }
 }

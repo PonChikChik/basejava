@@ -19,13 +19,13 @@ public abstract class AbstractArrayStorageTest extends AbstractStorageTest {
             int counter = size;
 
             while (counter != STORAGE_LIMIT) {
-                storage.save(new Resume());
+                storage.save(new Resume("Name" + counter));
                 counter++;
             }
         } catch (StorageException e) {
             Assertions.fail("Storage overflow too early", e);
         }
 
-        assertThrows(StorageException.class, () -> storage.save(new Resume()));
+        assertThrows(StorageException.class, () -> storage.save(new Resume("Overflow Name")));
     }
 }

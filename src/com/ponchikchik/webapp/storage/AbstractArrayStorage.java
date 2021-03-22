@@ -4,6 +4,7 @@ import com.ponchikchik.webapp.exception.StorageException;
 import com.ponchikchik.webapp.model.Resume;
 
 import java.util.Arrays;
+import java.util.List;
 
 abstract class AbstractArrayStorage extends AbstractStorage {
     protected static final int STORAGE_LIMIT = 10_000;
@@ -43,14 +44,6 @@ abstract class AbstractArrayStorage extends AbstractStorage {
         size--;
     }
 
-    /**
-     * @return array, contains only Resumes in storage (without null)
-     */
-    @Override
-    public Resume[] getAll() {
-        return Arrays.copyOf(storage, size);
-    }
-
     @Override
     public int size() {
         return size;
@@ -59,6 +52,11 @@ abstract class AbstractArrayStorage extends AbstractStorage {
     @Override
     protected boolean isExist(Object searchKey) {
         return (int) searchKey >= 0;
+    }
+
+    @Override
+    protected List<Resume> doCopyAllResumes() {
+        return Arrays.asList(Arrays.copyOf(storage, size));
     }
 
     protected abstract void removeResume(int index);
