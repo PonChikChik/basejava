@@ -4,7 +4,7 @@ import com.ponchikchik.webapp.model.Resume;
 
 import java.util.*;
 
-public class MapStorage extends AbstractStorage {
+public class MapStorage extends AbstractStorage<String> {
     private final Map<String, Resume> storage = new LinkedHashMap<>();
 
     @Override
@@ -18,33 +18,33 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object findSearchKey(String uuid) {
+    protected String findSearchKey(String uuid) {
         return uuid;
     }
 
     @Override
-    protected void doUpdate(Object searchKey, Resume resume) {
-        storage.put((String) searchKey, resume);
+    protected void doUpdate(String searchKey, Resume resume) {
+        storage.put(searchKey, resume);
     }
 
     @Override
-    protected void doSave(Object searchKey, Resume resume) {
+    protected void doSave(String searchKey, Resume resume) {
         storage.put(resume.getUuid(), resume);
     }
 
     @Override
-    protected Resume doGet(Object searchKey, String uuid) {
-        return storage.get((String) searchKey);
+    protected Resume doGet(String searchKey, String uuid) {
+        return storage.get(searchKey);
     }
 
     @Override
-    protected void doDelete(Object searchKey, String uuid) {
-        storage.remove((String) searchKey);
+    protected void doDelete(String searchKey, String uuid) {
+        storage.remove(searchKey);
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
-        return storage.containsKey((String) searchKey);
+    protected boolean isExist(String searchKey) {
+        return storage.containsKey(searchKey);
     }
 
     @Override
