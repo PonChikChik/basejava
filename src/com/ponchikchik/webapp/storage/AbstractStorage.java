@@ -4,6 +4,9 @@ import com.ponchikchik.webapp.exception.ExistStorageException;
 import com.ponchikchik.webapp.exception.NotExistStorageException;
 import com.ponchikchik.webapp.model.Resume;
 
+import java.util.Collections;
+import java.util.List;
+
 public abstract class AbstractStorage implements Storage {
     @Override
     public void update(Resume resume) {
@@ -27,6 +30,14 @@ public abstract class AbstractStorage implements Storage {
     public void delete(String uuid) {
         Object searchKey = getSearchKeyIfExist(uuid);
         doDelete(searchKey, uuid);
+    }
+
+    @Override
+    public List<Resume> getAllSorted() {
+        List<Resume> resumeList = doCopyAllResumes();
+        Collections.sort(resumeList);
+
+        return resumeList;
     }
 
     private Object getSearchKeyIfExist(String uuid) {
@@ -60,4 +71,6 @@ public abstract class AbstractStorage implements Storage {
     protected abstract void doDelete(Object searchKey, String uuid);
 
     protected abstract boolean isExist(Object searchKey);
+
+    protected abstract List<Resume> doCopyAllResumes();
 }
