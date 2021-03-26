@@ -52,12 +52,20 @@ public class Resume implements Comparable<Resume> {
         this.contacts = contacts;
     }
 
+    public String getContact(ContactType contactType) {
+        return contacts.get(contactType);
+    }
+
     public Map<SectionType, Section> getSections() {
         return sections;
     }
 
     public void setSections(Map<SectionType, Section> sections) {
         this.sections = sections;
+    }
+
+    public Section getSection(SectionType sectionType) {
+        return sections.get(sectionType);
     }
 
     @Override
