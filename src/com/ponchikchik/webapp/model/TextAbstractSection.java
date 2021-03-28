@@ -2,10 +2,10 @@ package com.ponchikchik.webapp.model;
 
 import java.util.Objects;
 
-public class TextSection extends Section {
+public class TextAbstractSection extends AbstractSection {
     private final String text;
 
-    public TextSection(String text) {
+    public TextAbstractSection(String text) {
         this.text = text;
     }
 
@@ -17,7 +17,7 @@ public class TextSection extends Section {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TextSection that = (TextSection) o;
+        TextAbstractSection that = (TextAbstractSection) o;
         return Objects.equals(text, that.text);
     }
 

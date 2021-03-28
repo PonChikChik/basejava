@@ -11,15 +11,13 @@ import static com.ponchikchik.webapp.model.ContactType.*;
 import static com.ponchikchik.webapp.model.SectionType.*;
 
 public class ResumeTestData {
-    private static final Logger LOG = Logger.getLogger(AbstractStorage.class.getName());
-
     private static Resume resume = null;
 
     public static void main(String[] args) {
         String uuid = UUID.randomUUID().toString();
         String fillName = "Григорий Кислин";
         Map<ContactType, String> contacts = new HashMap<>();
-        Map<SectionType, Section> sections = new HashMap<>();
+        Map<SectionType, AbstractSection> sections = new HashMap<>();
         contacts.put(EMAIL, "gkislin@yandex.ru");
         contacts.put(PHONE_NUMBER, "+7(921) 855-0482");
         contacts.put(SKYPE, "grigory.kislin");
@@ -28,22 +26,20 @@ public class ResumeTestData {
         contacts.put(STACKOVERFLOW, "https://stackoverflow.com/users/548473/grigory-kislin");
         contacts.put(HOME_PAGE, "http://gkislin.ru/");
 
-        sections.put(PERSONAL, new TextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
-        sections.put(OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
+        sections.put(PERSONAL, new TextAbstractSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
+        sections.put(OBJECTIVE, new TextAbstractSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
 
         List<String> achievementList = createAchievementList();
         List<String> qualificationList = createQualificationList();
         List<Organization> organizationList = createOrganizationList();
         List<Organization> educationList = createEducationList();
 
-        sections.put(ACHIEVEMENT, new ListSection(achievementList));
-        sections.put(QUALIFICATION, new ListSection(qualificationList));
+        sections.put(ACHIEVEMENT, new ListAbstractSection(achievementList));
+        sections.put(QUALIFICATION, new ListAbstractSection(qualificationList));
         sections.put(EXPERIENCE, new OrganizationList(organizationList));
         sections.put(EDUCATION, new OrganizationList(educationList));
 
         resume = new Resume(uuid, fillName, sections, contacts);
-
-        LOG.info(resume.toString());
     }
 
     private static List<Organization> createOrganizationList() {

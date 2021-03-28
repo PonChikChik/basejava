@@ -3,7 +3,7 @@ package com.ponchikchik.webapp.model;
 import java.util.List;
 import java.util.Objects;
 
-public class OrganizationList extends Section {
+public class OrganizationList extends AbstractSection {
     private final List<Organization> organizationList;
 
     public OrganizationList(List<Organization> organizationList) {
