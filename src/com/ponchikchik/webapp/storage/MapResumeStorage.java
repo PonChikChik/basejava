@@ -7,7 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MapResumeStorage extends AbstractStorage {
+public class MapResumeStorage extends AbstractStorage<Resume> {
     private final Map<String, Resume> storage = new LinkedHashMap<>();
 
     @Override
@@ -21,32 +21,32 @@ public class MapResumeStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object findSearchKey(String uuid) {
+    protected Resume findSearchKey(String uuid) {
         return storage.get(uuid);
     }
 
     @Override
-    protected void doUpdate(Object searchKey, Resume resume) {
+    protected void doUpdate(Resume searchKey, Resume resume) {
         storage.put(resume.getUuid(), resume);
     }
 
     @Override
-    protected void doSave(Object searchKey, Resume resume) {
+    protected void doSave(Resume searchKey, Resume resume) {
         storage.put(resume.getUuid(), resume);
     }
 
     @Override
-    protected Resume doGet(Object searchKey, String uuid) {
-        return (Resume) searchKey;
+    protected Resume doGet(Resume searchKey, String uuid) {
+        return searchKey;
     }
 
     @Override
-    protected void doDelete(Object searchKey, String uuid) {
-        storage.remove(((Resume) searchKey).getUuid());
+    protected void doDelete(Resume searchKey, String uuid) {
+        storage.remove(searchKey.getUuid());
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
+    protected boolean isExist(Resume searchKey) {
         return searchKey != null;
     }
 

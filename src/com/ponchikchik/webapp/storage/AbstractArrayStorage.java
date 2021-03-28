@@ -6,7 +6,7 @@ import com.ponchikchik.webapp.model.Resume;
 import java.util.Arrays;
 import java.util.List;
 
-abstract class AbstractArrayStorage extends AbstractStorage {
+abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected static final int STORAGE_LIMIT = 10_000;
 
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
@@ -18,28 +18,28 @@ abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doUpdate(Object searchKey, Resume resume) {
-        storage[(int) searchKey] = resume;
+    protected void doUpdate(Integer searchKey, Resume resume) {
+        storage[searchKey] = resume;
     }
 
     @Override
-    protected void doSave(Object searchKey, Resume resume) {
+    protected void doSave(Integer searchKey, Resume resume) {
         if (size == STORAGE_LIMIT) {
             throw new StorageException("Storage overflow", resume.getUuid());
         }
 
-        insertResume((int) searchKey, resume);
+        insertResume(searchKey, resume);
         size++;
     }
 
     @Override
-    protected Resume doGet(Object searchKey, String uuid) {
-        return storage[(int) searchKey];
+    protected Resume doGet(Integer searchKey, String uuid) {
+        return storage[searchKey];
     }
 
     @Override
-    protected void doDelete(Object searchKey, String uuid) {
-        removeResume((int) searchKey);
+    protected void doDelete(Integer searchKey, String uuid) {
+        removeResume(searchKey);
         storage[size - 1] = null;
         size--;
     }
@@ -50,8 +50,8 @@ abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
-        return (int) searchKey >= 0;
+    protected boolean isExist(Integer searchKey) {
+        return searchKey >= 0;
     }
 
     @Override
