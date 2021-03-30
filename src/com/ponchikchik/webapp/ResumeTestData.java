@@ -14,6 +14,11 @@ public class ResumeTestData {
     public static void main(String[] args) {
         String uuid = UUID.randomUUID().toString();
         String fillName = "Григорий Кислин";
+
+        resume = createResume(uuid, fillName);
+    }
+
+    public static Resume createResume(String uuid, String fillName) {
         Map<ContactType, String> contacts = new HashMap<>();
         Map<SectionType, AbstractSection> sections = new HashMap<>();
         contacts.put(EMAIL, "gkislin@yandex.ru");
@@ -37,7 +42,7 @@ public class ResumeTestData {
         sections.put(EXPERIENCE, new OrganizationList(organizationList));
         sections.put(EDUCATION, new OrganizationList(educationList));
 
-        resume = new Resume(uuid, fillName, sections, contacts);
+        return new Resume(uuid, fillName, sections, contacts);
     }
 
     private static List<Organization> createOrganizationList() {

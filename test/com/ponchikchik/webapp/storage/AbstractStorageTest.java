@@ -1,5 +1,6 @@
 package com.ponchikchik.webapp.storage;
 
+import com.ponchikchik.webapp.ResumeTestData;
 import com.ponchikchik.webapp.exception.ExistStorageException;
 import com.ponchikchik.webapp.exception.NotExistStorageException;
 import com.ponchikchik.webapp.model.Resume;
@@ -32,10 +33,10 @@ public abstract class AbstractStorageTest {
     protected int size = 0;
 
     static {
-        RESUME_1 = new Resume(UUID_1, NAME_1);
-        RESUME_2 = new Resume(UUID_2, NAME_2);
-        RESUME_3 = new Resume(UUID_3, NAME_3);
-        RESUME_4 = new Resume(UUID_4, NAME_4);
+        RESUME_1 = ResumeTestData.createResume(UUID_1, NAME_1);
+        RESUME_2 = ResumeTestData.createResume(UUID_2, NAME_2);
+        RESUME_3 = ResumeTestData.createResume(UUID_3, NAME_3);
+        RESUME_4 = ResumeTestData.createResume(UUID_4, NAME_4);
     }
 
     protected AbstractStorageTest(Storage storage) {
