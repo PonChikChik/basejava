@@ -1,23 +1,17 @@
 package com.ponchikchik.webapp.model;
 
-import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 public class Organization {
     private String companyName;
     private String website;
-    private String title;
-    private String description;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private List<OrganizationInformation> organizationInformationList;
 
-    public Organization(String companyName, String website, String title, String description, LocalDate startDate, LocalDate endDate) {
+    public Organization(String companyName, String website, List<OrganizationInformation> organizationInformationList) {
         this.companyName = companyName;
         this.website = website;
-        this.title = title;
-        this.description = description;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.organizationInformationList = organizationInformationList;
     }
 
     public String getCompanyName() {
@@ -36,36 +30,12 @@ public class Organization {
         this.website = website;
     }
 
-    public String getTitle() {
-        return title;
+    public List<OrganizationInformation> getOrganizationInformationList() {
+        return organizationInformationList;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
+    public void setOrganizationInformationList(List<OrganizationInformation> organizationInformationList) {
+        this.organizationInformationList = organizationInformationList;
     }
 
     @Override
@@ -73,12 +43,12 @@ public class Organization {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Organization that = (Organization) o;
-        return Objects.equals(companyName, that.companyName) && Objects.equals(website, that.website) && Objects.equals(title, that.title) && Objects.equals(description, that.description) && Objects.equals(startDate, that.startDate) && Objects.equals(endDate, that.endDate);
+        return Objects.equals(companyName, that.companyName) && Objects.equals(website, that.website) && Objects.equals(organizationInformationList, that.organizationInformationList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(companyName, website, title, description, startDate, endDate);
+        return Objects.hash(companyName, website, organizationInformationList);
     }
 
     @Override
@@ -86,10 +56,7 @@ public class Organization {
         return "Organization{" +
                 "companyName='" + companyName + '\'' +
                 ", website='" + website + '\'' +
-                ", title='" + title + '\'' +
-                ", description=" + description +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
+                ", organizationInformationList=" + organizationInformationList +
                 '}';
     }
 }
