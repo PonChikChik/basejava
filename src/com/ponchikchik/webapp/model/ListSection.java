@@ -3,10 +3,10 @@ package com.ponchikchik.webapp.model;
 import java.util.List;
 import java.util.Objects;
 
-public class ListAbstractSection extends AbstractSection {
+public class ListSection extends AbstractSection {
     private final List<String> list;
 
-    public ListAbstractSection(List<String> list) {
+    public ListSection(List<String> list) {
         this.list = list;
     }
 
@@ -18,7 +18,7 @@ public class ListAbstractSection extends AbstractSection {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ListAbstractSection that = (ListAbstractSection) o;
+        ListSection that = (ListSection) o;
         return Objects.equals(list, that.list);
     }
 
