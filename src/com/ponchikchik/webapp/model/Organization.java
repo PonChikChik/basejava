@@ -6,12 +6,12 @@ import java.util.Objects;
 public class Organization {
     private String companyName;
     private String website;
-    private List<OrganizationInformation> organizationInformationList;
+    private List<Experience> experienceList;
 
-    public Organization(String companyName, String website, List<OrganizationInformation> organizationInformationList) {
+    public Organization(String companyName, String website, List<Experience> experienceList) {
         this.companyName = companyName;
         this.website = website;
-        this.organizationInformationList = organizationInformationList;
+        this.experienceList = experienceList;
     }
 
     public String getCompanyName() {
@@ -30,12 +30,12 @@ public class Organization {
         this.website = website;
     }
 
-    public List<OrganizationInformation> getOrganizationInformationList() {
-        return organizationInformationList;
+    public List<Experience> getOrganizationInformationList() {
+        return experienceList;
     }
 
-    public void setOrganizationInformationList(List<OrganizationInformation> organizationInformationList) {
-        this.organizationInformationList = organizationInformationList;
+    public void setOrganizationInformationList(List<Experience> experienceList) {
+        this.experienceList = experienceList;
     }
 
     @Override
@@ -43,12 +43,12 @@ public class Organization {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Organization that = (Organization) o;
-        return Objects.equals(companyName, that.companyName) && Objects.equals(website, that.website) && Objects.equals(organizationInformationList, that.organizationInformationList);
+        return Objects.equals(companyName, that.companyName) && Objects.equals(website, that.website) && Objects.equals(experienceList, that.experienceList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(companyName, website, organizationInformationList);
+        return Objects.hash(companyName, website, experienceList);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class Organization {
         return "Organization{" +
                 "companyName='" + companyName + '\'' +
                 ", website='" + website + '\'' +
-                ", organizationInformationList=" + organizationInformationList +
+                ", organizationInformationList=" + experienceList +
                 '}';
     }
 }

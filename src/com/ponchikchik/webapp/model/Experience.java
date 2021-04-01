@@ -3,13 +3,13 @@ package com.ponchikchik.webapp.model;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class OrganizationInformation {
+public class Experience {
     private String title;
     private String description;
     private LocalDate startDate;
     private LocalDate endDate;
 
-    public OrganizationInformation(String title, String description, LocalDate startDate, LocalDate endDate) {
+    public Experience(String title, String description, LocalDate startDate, LocalDate endDate) {
         this.title = title;
         this.description = description;
         this.startDate = startDate;
@@ -52,7 +52,7 @@ public class OrganizationInformation {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        OrganizationInformation that = (OrganizationInformation) o;
+        Experience that = (Experience) o;
         return Objects.equals(title, that.title) && Objects.equals(description, that.description) && Objects.equals(startDate, that.startDate) && Objects.equals(endDate, that.endDate);
     }
 
