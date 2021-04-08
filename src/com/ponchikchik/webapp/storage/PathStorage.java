@@ -2,19 +2,26 @@ package com.ponchikchik.webapp.storage;
 
 import com.ponchikchik.webapp.exception.StorageException;
 import com.ponchikchik.webapp.model.Resume;
+import com.ponchikchik.webapp.storage.serialize.StreamSerializer;
 
 import java.io.*;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class AbstractPathStorage extends AbstractStorage<Path> {
+public class PathStorage extends AbstractStorage<Path> {
     private final Path directory;
+    private final StreamSerializer streamSerializer;
 
-    public AbstractPathStorage(String directory) {
+    public PathStorage(String directory, StreamSerializer streamSerializer) {
         this.directory = Paths.get(directory);
+        this.streamSerializer = streamSerializer;
+
         Objects.requireNonNull(this.directory, "directory must not be null");
 
         if (!Files.isDirectory(this.directory) || !Files.isWritable(this.directory)) {
@@ -30,7 +37,7 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     @Override
     protected void doUpdate(Path path, Resume resume) {
         try(OutputStream outputStream = Files.newOutputStream(path, StandardOpenOption.WRITE)) {
-            doWrite(new BufferedOutputStream(outputStream), resume);
+            streamSerializer.doWrite(new BufferedOutputStream(outputStream), resume);
         } catch (IOException e) {
             throw new StorageException("Path write error", resume.getUuid(), e);
         }
@@ -39,7 +46,7 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     @Override
     protected void doSave(Path path, Resume resume) {
         try(OutputStream outputStream = Files.newOutputStream(path, StandardOpenOption.CREATE_NEW)) {
-            doWrite(new BufferedOutputStream(outputStream), resume);
+            streamSerializer.doWrite(new BufferedOutputStream(outputStream), resume);
         } catch (IOException e) {
             throw new StorageException("Path write error", resume.getUuid(), e);
         }
@@ -48,7 +55,7 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     @Override
     protected Resume doGet(Path path, String uuid) {
         try(InputStream inputStream = Files.newInputStream(path, StandardOpenOption.CREATE_NEW)) {
-            return doRead(new BufferedInputStream(inputStream));
+            return streamSerializer.doRead(new BufferedInputStream(inputStream));
         } catch (IOException e) {
             throw new StorageException("Path write error", getFileName(path), e);
         }
@@ -98,8 +105,4 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
             throw new StorageException("Directory read error", null, e);
         }
     }
-
-    protected abstract void doWrite(OutputStream file, Resume resume) throws IOException;
-
-    protected abstract Resume doRead(InputStream file) throws IOException;
 }

@@ -2,16 +2,18 @@ package com.ponchikchik.webapp.storage;
 
 import com.ponchikchik.webapp.exception.StorageException;
 import com.ponchikchik.webapp.model.Resume;
+import com.ponchikchik.webapp.storage.serialize.StreamSerializer;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractFileStorage extends AbstractStorage<File> {
+public class FileStorage extends AbstractStorage<File> {
     private final File directory;
+    private final StreamSerializer streamSerializer;
 
-    public AbstractFileStorage(File directory) {
+    public FileStorage(File directory, StreamSerializer streamSerializer) {
         Objects.requireNonNull(directory, "directory must not be null");
 
         if (!directory.isDirectory()) {
@@ -23,6 +25,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         }
 
         this.directory = directory;
+        this.streamSerializer = streamSerializer;
     }
 
     @Override
@@ -55,7 +58,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected void doUpdate(File file, Resume resume) {
         try {
-            doWrite(new BufferedOutputStream(new FileOutputStream(file)), resume);
+            streamSerializer.doWrite(new BufferedOutputStream(new FileOutputStream(file)), resume);
         } catch (IOException e) {
             throw new StorageException("File write error", resume.getUuid(), e);
         }
@@ -74,7 +77,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected Resume doGet(File file, String uuid) {
         try {
-            return doRead(new BufferedInputStream(new FileInputStream(file)));
+            return streamSerializer.doRead(new BufferedInputStream(new FileInputStream(file)));
         } catch (IOException e) {
             throw new StorageException("File read error", file.getName(), e);
         }
@@ -108,8 +111,4 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
         return list;
     }
-
-    protected abstract void doWrite(OutputStream file, Resume resume) throws IOException;
-
-    protected abstract Resume doRead(InputStream file) throws IOException;
 }
