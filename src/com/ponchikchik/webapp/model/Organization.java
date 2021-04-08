@@ -1,9 +1,10 @@
 package com.ponchikchik.webapp.model;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-public class Organization {
+public class Organization implements Serializable {
     private String companyName;
     private String website;
     private List<Experience> experienceList;

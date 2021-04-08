@@ -1,9 +1,10 @@
 package com.ponchikchik.webapp.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Experience {
+public class Experience implements Serializable {
     private String title;
     private String description;
     private LocalDate startDate;
