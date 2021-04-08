@@ -5,8 +5,8 @@ import com.ponchikchik.webapp.model.Resume;
 
 import java.io.*;
 
-public class PathStorage extends AbstractPathStorage {
-    public PathStorage(String directory) {
+public class ObjectStreamPathStorage extends AbstractPathStorage {
+    public ObjectStreamPathStorage(String directory) {
         super(directory);
     }
 
