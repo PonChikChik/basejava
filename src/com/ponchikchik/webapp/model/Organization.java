@@ -1,18 +1,25 @@
 package com.ponchikchik.webapp.model;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class Organization implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String companyName;
-    private String website;
+    private Link website;
     private List<Experience> experienceList;
 
-    public Organization(String companyName, String website, List<Experience> experienceList) {
-        this.companyName = companyName;
-        this.website = website;
-        this.experienceList = experienceList;
+    public Organization(String name, String url, Experience... positions) {
+        this(new Link(name, url), Arrays.asList(positions));
+    }
+
+    public Organization(Link homePage, List<Experience> positions) {
+        this.website = homePage;
+        this.experienceList = positions;
     }
 
     public String getCompanyName() {
@@ -23,11 +30,11 @@ public class Organization implements Serializable {
         this.companyName = companyName;
     }
 
-    public String getWebsite() {
+    public Link getWebsite() {
         return website;
     }
 
-    public void setWebsite(String website) {
+    public void setWebsite(Link website) {
         this.website = website;
     }
 
@@ -59,5 +66,74 @@ public class Organization implements Serializable {
                 ", website='" + website + '\'' +
                 ", organizationInformationList=" + experienceList +
                 '}';
+    }
+
+    public static class Experience implements Serializable {
+        private String title;
+        private String description;
+        private LocalDate startDate;
+        private LocalDate endDate;
+
+        public Experience(String title, String description, LocalDate startDate, LocalDate endDate) {
+            this.title = title;
+            this.description = description;
+            this.startDate = startDate;
+            this.endDate = endDate;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public LocalDate getStartDate() {
+            return startDate;
+        }
+
+        public void setStartDate(LocalDate startDate) {
+            this.startDate = startDate;
+        }
+
+        public LocalDate getEndDate() {
+            return endDate;
+        }
+
+        public void setEndDate(LocalDate endDate) {
+            this.endDate = endDate;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Experience that = (Experience) o;
+            return Objects.equals(title, that.title) && Objects.equals(description, that.description) && Objects.equals(startDate, that.startDate) && Objects.equals(endDate, that.endDate);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(title, description, startDate, endDate);
+        }
+
+        @Override
+        public String toString() {
+            return "OrganizationInformation{" +
+                    "title='" + title + '\'' +
+                    ", description='" + description + '\'' +
+                    ", startDate=" + startDate +
+                    ", endDate=" + endDate +
+                    '}';
+        }
     }
 }

@@ -44,7 +44,7 @@ public class FileStorage extends AbstractStorage<File> {
         String[] list = directory.list();
 
         if (list == null) {
-            throw new StorageException("Directory read error", null);
+            throw new StorageException("Directory read error", "");
         }
 
         return list.length;
@@ -100,7 +100,7 @@ public class FileStorage extends AbstractStorage<File> {
         File[] files = directory.listFiles();
 
         if (files == null) {
-            throw new StorageException("Directory read error", null);
+            throw new StorageException("Directory read error", "");
         }
 
         List<Resume> list = new ArrayList<>(files.length);
