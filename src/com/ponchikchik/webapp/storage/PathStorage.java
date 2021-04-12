@@ -36,8 +36,8 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     protected void doUpdate(Path path, Resume resume) {
-        try(OutputStream outputStream = Files.newOutputStream(path, StandardOpenOption.WRITE)) {
-            streamSerializer.doWrite(new BufferedOutputStream(outputStream), resume);
+        try {
+            streamSerializer.doWrite(new BufferedOutputStream(Files.newOutputStream(path)), resume);
         } catch (IOException e) {
             throw new StorageException("Path write error", resume.getUuid(), e);
         }
@@ -45,17 +45,13 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     protected void doSave(Path path, Resume resume) {
-        try(OutputStream outputStream = Files.newOutputStream(path, StandardOpenOption.CREATE_NEW)) {
-            streamSerializer.doWrite(new BufferedOutputStream(outputStream), resume);
-        } catch (IOException e) {
-            throw new StorageException("Path write error", resume.getUuid(), e);
-        }
+        doUpdate(path, resume);
     }
 
     @Override
     protected Resume doGet(Path path) {
-        try(InputStream inputStream = Files.newInputStream(path, StandardOpenOption.CREATE_NEW)) {
-            return streamSerializer.doRead(new BufferedInputStream(inputStream));
+        try {
+            return streamSerializer.doRead(new BufferedInputStream(Files.newInputStream(path)));
         } catch (IOException e) {
             throw new StorageException("Path write error", getFileName(path), e);
         }
@@ -82,11 +78,7 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     public void clear() {
-        try {
-            Files.list(directory).forEach(this::doDelete);
-        } catch (IOException e) {
-            throw new StorageException("Path delete error", e);
-        }
+        getFilesList().forEach(this::doDelete);
     }
 
     @Override

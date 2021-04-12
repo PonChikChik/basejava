@@ -1,6 +1,7 @@
 package com.ponchikchik.webapp.storage;
 
 import com.ponchikchik.webapp.exception.StorageException;
+import com.ponchikchik.webapp.model.Resume;
 import com.ponchikchik.webapp.storage.serialize.StreamSerializer;
 
 
@@ -30,11 +31,7 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     public void clear() {
-        File[] files = directory.listFiles();
-
-        if (files == null) {
-            throw new StorageException("Directory is empty", "");
-        }
+        File[] files = getFiles();
 
         for (File file : files) {
             doDelete(file);
@@ -43,13 +40,8 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     public int size() {
-        File[] list = directory.listFiles();
-
-        if (list == null) {
-            throw new StorageException("Directory read error", "");
-        }
-
-        return list.length;
+        File[] files = getFiles();
+        return files.length;
     }
 
     @Override
@@ -101,7 +93,6 @@ public class FileStorage extends AbstractStorage<File> {
     @Override
     protected List<Resume> doCopyAll() {
         File[] files = getFiles();
-
         List<Resume> list = new ArrayList<>(files.length);
 
         for (File file : files) {
