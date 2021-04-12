@@ -16,7 +16,7 @@ public abstract class AbstractArrayStorageTest extends AbstractStorageTest {
     @Test
     public void assertStorageOverflow() {
         try {
-            int counter = size;
+            int counter = 0;
 
             while (counter != STORAGE_LIMIT) {
                 storage.save(new Resume("Name" + counter));

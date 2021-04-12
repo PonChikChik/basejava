@@ -1,8 +1,8 @@
 package com.ponchikchik.webapp.storage;
 
 import com.ponchikchik.webapp.exception.StorageException;
-import com.ponchikchik.webapp.model.Resume;
 import com.ponchikchik.webapp.storage.serialize.StreamSerializer;
+
 
 import java.io.*;
 import java.util.ArrayList;
@@ -32,16 +32,18 @@ public class FileStorage extends AbstractStorage<File> {
     public void clear() {
         File[] files = directory.listFiles();
 
-        if (files != null) {
-            for (File file : files) {
-                doDelete(file, "");
-            }
+        if (files == null) {
+            throw new StorageException("Directory is empty", "");
+        }
+
+        for (File file : files) {
+            doDelete(file);
         }
     }
 
     @Override
     public int size() {
-        String[] list = directory.list();
+        File[] list = directory.listFiles();
 
         if (list == null) {
             throw new StorageException("Directory read error", "");
@@ -68,14 +70,15 @@ public class FileStorage extends AbstractStorage<File> {
     protected void doSave(File file, Resume resume) {
         try {
             file.createNewFile();
-            doUpdate(file, resume);
         } catch (IOException e) {
             throw new StorageException("Don't create file", file.getName(), e);
         }
+
+        doUpdate(file, resume);
     }
 
     @Override
-    protected Resume doGet(File file, String uuid) {
+    protected Resume doGet(File file) {
         try {
             return streamSerializer.doRead(new BufferedInputStream(new FileInputStream(file)));
         } catch (IOException e) {
@@ -84,7 +87,7 @@ public class FileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected void doDelete(File file, String uuid) {
+    protected void doDelete(File file) {
         if (!file.delete()) {
             throw new StorageException("File delete error", file.getName());
         }
@@ -96,19 +99,25 @@ public class FileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected List<Resume> doCopyAllResumes() {
+    protected List<Resume> doCopyAll() {
+        File[] files = getFiles();
+
+        List<Resume> list = new ArrayList<>(files.length);
+
+        for (File file : files) {
+            list.add(doGet(file));
+        }
+
+        return list;
+    }
+
+    private File[] getFiles() {
         File[] files = directory.listFiles();
 
         if (files == null) {
             throw new StorageException("Directory read error", "");
         }
 
-        List<Resume> list = new ArrayList<>(files.length);
-
-        for (File file : files) {
-            list.add(doGet(file, ""));
-        }
-
-        return list;
+        return files;
     }
 }

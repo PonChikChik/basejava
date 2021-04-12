@@ -53,7 +53,7 @@ public class PathStorage extends AbstractStorage<Path> {
     }
 
     @Override
-    protected Resume doGet(Path path, String uuid) {
+    protected Resume doGet(Path path) {
         try(InputStream inputStream = Files.newInputStream(path, StandardOpenOption.CREATE_NEW)) {
             return streamSerializer.doRead(new BufferedInputStream(inputStream));
         } catch (IOException e) {
@@ -62,7 +62,7 @@ public class PathStorage extends AbstractStorage<Path> {
     }
 
     @Override
-    protected void doDelete(Path path, String uuid) {
+    protected void doDelete(Path path) {
         try {
             Files.delete(path);
         } catch (IOException e) {
@@ -76,14 +76,14 @@ public class PathStorage extends AbstractStorage<Path> {
     }
 
     @Override
-    protected List<Resume> doCopyAllResumes() {
-        return getFilesList().map((Path path) -> doGet(path, null)).collect(Collectors.toList());
+    protected List<Resume> doCopyAll() {
+        return getFilesList().map(this::doGet).collect(Collectors.toList());
     }
 
     @Override
     public void clear() {
         try {
-            Files.list(directory).forEach(path -> doDelete(path, ""));
+            Files.list(directory).forEach(this::doDelete);
         } catch (IOException e) {
             throw new StorageException("Path delete error", e);
         }

@@ -20,7 +20,7 @@ public class MainFile {
                 if (file.isFile()) {
                     System.out.println(offset + "File: " + file.getName());
                 } else if (file.isDirectory()) {
-                    System.out.println("\n" + offset + "Directory: " + file.getName());
+                    System.out.println(offset + "Directory: " + file.getName());
                     printDirectory(file, offset + "  ");
                 }
             }

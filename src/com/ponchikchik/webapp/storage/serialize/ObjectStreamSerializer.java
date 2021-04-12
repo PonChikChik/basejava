@@ -5,7 +5,7 @@ import com.ponchikchik.webapp.model.Resume;
 
 import java.io.*;
 
-public class ObjectStreamFileSerializer implements StreamSerializer {
+public class ObjectStreamSerializer implements StreamSerializer {
     @Override
     public void doWrite(OutputStream outputStream, Resume resume) throws IOException {
         try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream)) {

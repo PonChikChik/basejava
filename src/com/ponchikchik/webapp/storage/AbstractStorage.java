@@ -29,20 +29,20 @@ public abstract class AbstractStorage<SearchKey> implements Storage {
     public Resume get(String uuid) {
         LOG.info("Get" + uuid);
         SearchKey searchKey = getSearchKeyIfExist(uuid);
-        return doGet(searchKey, uuid);
+        return doGet(searchKey);
     }
 
     @Override
     public void delete(String uuid) {
         LOG.info("Update" + uuid);
         SearchKey searchKey = getSearchKeyIfExist(uuid);
-        doDelete(searchKey, uuid);
+        doDelete(searchKey);
     }
 
     @Override
     public List<Resume> getAllSorted() {
         LOG.info("getAllSorted");
-        List<Resume> resumeList = doCopyAllResumes();
+        List<Resume> resumeList = doCopyAll();
         Collections.sort(resumeList);
 
         return resumeList;
@@ -76,11 +76,11 @@ public abstract class AbstractStorage<SearchKey> implements Storage {
 
     protected abstract void doSave(SearchKey searchKey, Resume resume);
 
-    protected abstract Resume doGet(SearchKey searchKey, String uuid);
+    protected abstract Resume doGet(SearchKey searchKey);
 
-    protected abstract void doDelete(SearchKey searchKey, String uuid);
+    protected abstract void doDelete(SearchKey searchKey);
 
     protected abstract boolean isExist(SearchKey searchKey);
 
-    protected abstract List<Resume> doCopyAllResumes();
+    protected abstract List<Resume> doCopyAll();
 }
