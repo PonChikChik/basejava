@@ -4,11 +4,12 @@ import com.ponchikchik.webapp.exception.StorageException;
 import com.ponchikchik.webapp.model.Resume;
 import com.ponchikchik.webapp.storage.serialize.StreamSerializer;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -45,6 +46,12 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     protected void doSave(Path path, Resume resume) {
+        try {
+            Files.createFile(path);
+        } catch (IOException e) {
+            throw new StorageException("Create file error", getFileName(path).toString(), e);
+        }
+
         doUpdate(path, resume);
     }
 
@@ -53,7 +60,7 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             return streamSerializer.doRead(new BufferedInputStream(Files.newInputStream(path)));
         } catch (IOException e) {
-            throw new StorageException("Path write error", getFileName(path), e);
+            throw new StorageException("Path write error", getFileName(path).toString(), e);
         }
     }
 
@@ -62,7 +69,7 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             Files.delete(path);
         } catch (IOException e) {
-            throw new StorageException("Path delete error", getFileName(path), e);
+            throw new StorageException("Path delete error", getFileName(path).toString(), e);
         }
     }
 
@@ -86,8 +93,8 @@ public class PathStorage extends AbstractStorage<Path> {
         return (int) getFilesList().count();
     }
 
-    private String getFileName(Path path) {
-        return path.getFileName().toString();
+    private Path getFileName(Path path) {
+        return path.getFileName();
     }
 
     private Stream<Path> getFilesList() {
