@@ -1,35 +1,30 @@
 package com.ponchikchik.webapp.model;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Initial resume class
  */
-public class Resume implements Comparable<Resume> {
+public class Resume implements Comparable<Resume>, Serializable {
+    private static final long serialVersionUID = 1L;
 
     // Unique identifier
     private final String uuid;
 
     private String fullName;
-    private Map<ContactType, String> contacts;
-    private Map<SectionType, AbstractSection> sections;
+    private final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
+    private final Map<SectionType, AbstractSection> sections = new EnumMap<>(SectionType.class);
 
     public Resume(String fullName) {
-        this(UUID.randomUUID().toString(), fullName, new HashMap<>(), new HashMap<>());
+        this(UUID.randomUUID().toString(), fullName);
     }
 
     public Resume(String uuid, String fullName) {
-        this(uuid, fullName, new HashMap<>(), new HashMap<>());
-    }
-
-    public Resume(String uuid, String fullName, Map<SectionType, AbstractSection> sections, Map<ContactType, String> contacts) {
+        Objects.requireNonNull(uuid, "uuid must not be null");
+        Objects.requireNonNull(fullName, "fullName must not be null");
         this.uuid = uuid;
         this.fullName = fullName;
-        this.sections = sections;
-        this.contacts = contacts;
     }
 
     public String getUuid() {
@@ -44,28 +39,20 @@ public class Resume implements Comparable<Resume> {
         this.fullName = fullName;
     }
 
-    public Map<ContactType, String> getContacts() {
-        return contacts;
+    public String getContact(ContactType type) {
+        return contacts.get(type);
     }
 
-    public void setContacts(Map<ContactType, String> contacts) {
-        this.contacts = contacts;
+    public AbstractSection getSection(SectionType type) {
+        return sections.get(type);
     }
 
-    public String getContact(ContactType contactType) {
-        return contacts.get(contactType);
+    public void addContact(ContactType type, String value) {
+        contacts.put(type, value);
     }
 
-    public Map<SectionType, AbstractSection> getSections() {
-        return sections;
-    }
-
-    public void setSections(Map<SectionType, AbstractSection> sections) {
-        this.sections = sections;
-    }
-
-    public AbstractSection getSection(SectionType sectionType) {
-        return sections.get(sectionType);
+    public void addSection(SectionType type, AbstractSection section) {
+        sections.put(type, section);
     }
 
     @Override

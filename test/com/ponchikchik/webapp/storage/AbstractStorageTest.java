@@ -8,7 +8,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class AbstractStorageTest {
+    protected static final File STORAGE_DIR = new File("storage/");
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
@@ -30,7 +31,6 @@ public abstract class AbstractStorageTest {
     private static final Resume RESUME_4;
 
     protected final Storage storage;
-    protected int size = 0;
 
     static {
         RESUME_1 = ResumeTestData.createResume(UUID_1, NAME_1);
@@ -48,8 +48,6 @@ public abstract class AbstractStorageTest {
         storage.save(RESUME_1);
         storage.save(RESUME_2);
         storage.save(RESUME_3);
-
-        size = 3;
     }
 
     @AfterEach
@@ -60,9 +58,8 @@ public abstract class AbstractStorageTest {
     @Test
     public void clear() {
         storage.clear();
-        size = 0;
 
-        assetsSize();
+        assertSize(0);
     }
 
     @Test
@@ -70,8 +67,8 @@ public abstract class AbstractStorageTest {
         Resume resume = new Resume(UUID_1, "Updated Name");
         storage.update(resume);
 
-        assetsResume(resume);
-        assetsSize();
+        assertResume(resume);
+        assertSize(3);
     }
 
     @Test
@@ -84,9 +81,8 @@ public abstract class AbstractStorageTest {
         Resume resume = RESUME_4;
         storage.save(resume);
 
-        assetsResume(resume);
-        size++;
-        assetsSize();
+        assertResume(resume);
+        assertSize(4);
     }
 
     @Test
@@ -96,9 +92,9 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void get() {
-        assetsResume(RESUME_1);
-        assetsResume(RESUME_2);
-        assetsResume(RESUME_3);
+        assertResume(RESUME_1);
+        assertResume(RESUME_2);
+        assertResume(RESUME_3);
     }
 
     @Test
@@ -109,8 +105,7 @@ public abstract class AbstractStorageTest {
     @Test
     public void delete() {
         storage.delete(UUID_1);
-        size--;
-        assetsSize();
+        assertSize(2);
 
         assertThrows(NotExistStorageException.class, () -> storage.get(UUID_1));
     }
@@ -130,14 +125,14 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void size() {
-        assetsSize();
+        assertSize(3);
     }
 
-    private void assetsSize() {
+    private void assertSize(int size) {
         assertEquals(size, storage.size());
     }
 
-    private void assetsResume(Resume resume) {
+    private void assertResume(Resume resume) {
         assertEquals(resume, storage.get(resume.getUuid()));
     }
 }

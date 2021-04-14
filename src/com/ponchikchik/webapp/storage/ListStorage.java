@@ -42,12 +42,12 @@ public class ListStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    protected Resume doGet(Integer searchKey, String uuid) {
+    protected Resume doGet(Integer searchKey) {
         return storage.get(searchKey);
     }
 
     @Override
-    protected void doDelete(Integer searchKey, String uuid) {
+    protected void doDelete(Integer searchKey) {
         storage.remove(searchKey.intValue());
     }
 
@@ -57,7 +57,7 @@ public class ListStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    protected List<Resume> doCopyAllResumes() {
+    protected List<Resume> doCopyAll() {
         return new ArrayList<>(storage);
     }
 }

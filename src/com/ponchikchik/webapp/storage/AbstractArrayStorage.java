@@ -33,12 +33,12 @@ abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    protected Resume doGet(Integer searchKey, String uuid) {
+    protected Resume doGet(Integer searchKey) {
         return storage[searchKey];
     }
 
     @Override
-    protected void doDelete(Integer searchKey, String uuid) {
+    protected void doDelete(Integer searchKey) {
         removeResume(searchKey);
         storage[size - 1] = null;
         size--;
@@ -55,7 +55,7 @@ abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    protected List<Resume> doCopyAllResumes() {
+    protected List<Resume> doCopyAll() {
         return Arrays.asList(Arrays.copyOf(storage, size));
     }
 
