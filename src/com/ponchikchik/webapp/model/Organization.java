@@ -24,6 +24,7 @@ public class Organization implements Serializable {
     }
 
     public Organization(Link homePage, List<Experience> positions) {
+        this.companyName = homePage.getName();
         this.website = homePage;
         this.experienceList = positions;
     }
@@ -47,11 +48,11 @@ public class Organization implements Serializable {
         this.website = website;
     }
 
-    public List<Experience> getOrganizationInformationList() {
+    public List<Experience> getExperienceList() {
         return experienceList;
     }
 
-    public void setOrganizationInformationList(List<Experience> experienceList) {
+    public void setExperienceList(List<Experience> experienceList) {
         this.experienceList = experienceList;
     }
 
@@ -73,7 +74,7 @@ public class Organization implements Serializable {
         return "Organization{" +
                 "companyName='" + companyName + '\'' +
                 ", website='" + website + '\'' +
-                ", organizationInformationList=" + experienceList +
+                ", experienceList=" + experienceList +
                 '}';
     }
 
