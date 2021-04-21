@@ -5,10 +5,13 @@ import java.util.Objects;
 public class TextSection extends AbstractSection {
     private static final long serialVersionUID = 1L;
 
-    private final String text;
+    private String text;
 
     public TextSection(String text) {
         this.text = text;
+    }
+
+    public TextSection() {
     }
 
     public String getText() {

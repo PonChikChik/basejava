@@ -1,11 +1,17 @@
 package com.ponchikchik.webapp.model;
 
+import com.ponchikchik.webapp.util.LocalDateAdapter;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -18,8 +24,12 @@ public class Organization implements Serializable {
     }
 
     public Organization(Link homePage, List<Experience> positions) {
+        this.companyName = homePage.getName();
         this.website = homePage;
         this.experienceList = positions;
+    }
+
+    public Organization() {
     }
 
     public String getCompanyName() {
@@ -38,11 +48,11 @@ public class Organization implements Serializable {
         this.website = website;
     }
 
-    public List<Experience> getOrganizationInformationList() {
+    public List<Experience> getExperienceList() {
         return experienceList;
     }
 
-    public void setOrganizationInformationList(List<Experience> experienceList) {
+    public void setExperienceList(List<Experience> experienceList) {
         this.experienceList = experienceList;
     }
 
@@ -64,21 +74,31 @@ public class Organization implements Serializable {
         return "Organization{" +
                 "companyName='" + companyName + '\'' +
                 ", website='" + website + '\'' +
-                ", organizationInformationList=" + experienceList +
+                ", experienceList=" + experienceList +
                 '}';
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
     public static class Experience implements Serializable {
         private String title;
         private String description;
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
         private LocalDate startDate;
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
         private LocalDate endDate;
 
         public Experience(String title, String description, LocalDate startDate, LocalDate endDate) {
+            Objects.requireNonNull(startDate, "startDate must not be null");
+            Objects.requireNonNull(endDate, "endDate must not be null");
+            Objects.requireNonNull(title, "title must not be null");
+
             this.title = title;
             this.description = description;
             this.startDate = startDate;
             this.endDate = endDate;
+        }
+
+        public Experience() {
         }
 
         public String getTitle() {
@@ -128,7 +148,7 @@ public class Organization implements Serializable {
 
         @Override
         public String toString() {
-            return "OrganizationInformation{" +
+            return "Experience{" +
                     "title='" + title + '\'' +
                     ", description='" + description + '\'' +
                     ", startDate=" + startDate +
