@@ -147,17 +147,10 @@ public class DataStreamSerializer implements StreamSerializer {
     }
 
     private LocalDate revertToLocalDate(String localDate) {
-        if ("0000-01-01".equals(localDate)) {
-            return null;
-        }
-        return LocalDate.parse(localDate);
+        return "0000-01-01".equals(localDate) ? null : LocalDate.parse(localDate);
     }
 
     private String revertFromFile(String value) {
-        if (value.equals("null")) {
-            return null;
-        }
-
-        return value;
+        return value.equals("null") ? null : value;
     }
 }
