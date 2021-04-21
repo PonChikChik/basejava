@@ -10,55 +10,43 @@ import java.util.*;
 public class DataStreamSerializer implements StreamSerializer {
     @Override
     public void doWrite(OutputStream outputStream, Resume resume) throws IOException {
-        try (DataOutputStream dataOutputStream = new DataOutputStream(outputStream)) {
-            dataOutputStream.writeUTF(resume.getUuid());
-            dataOutputStream.writeUTF(resume.getFullName());
+        try (DataOutputStream dos = new DataOutputStream(outputStream)) {
+            dos.writeUTF(resume.getUuid());
+            dos.writeUTF(resume.getFullName());
 
             Map<ContactType, String> contacts = resume.getContacts();
-            writeCollection(dataOutputStream, contacts.entrySet(), (entry) -> {
-                dataOutputStream.writeUTF(entry.getKey().name());
-                dataOutputStream.writeUTF(entry.getValue());
+            writeCollection(dos, contacts.entrySet(), (entry) -> {
+                dos.writeUTF(entry.getKey().name());
+                dos.writeUTF(entry.getValue());
             });
 
             Map<SectionType, AbstractSection> sections = resume.getSections();
-            writeCollection(dataOutputStream, sections.entrySet(), (entry) -> {
-                SectionType sectionName = entry.getKey();
-                dataOutputStream.writeUTF(sectionName.name());
+            writeCollection(dos, sections.entrySet(), (entry) -> {
+                SectionType sType = entry.getKey();
+                dos.writeUTF(sType.name());
                 AbstractSection sectionValue = entry.getValue();
 
-                switch (sectionName) {
+                switch (sType) {
                     case PERSONAL:
                     case OBJECTIVE: {
-                        dataOutputStream.writeUTF(((TextSection) sectionValue).getText());
+                        dos.writeUTF(((TextSection) sectionValue).getText());
                         break;
                     }
                     case ACHIEVEMENT:
                     case QUALIFICATION:
-                        writeCollection(dataOutputStream, ((ListSection) sectionValue).getList(), dataOutputStream::writeUTF);
+                        writeCollection(dos, ((ListSection) sectionValue).getList(), dos::writeUTF);
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        writeCollection(dataOutputStream, ((OrganizationList) sectionValue).getOrganizationList(), (organization) -> {
-                            dataOutputStream.writeUTF(Objects.requireNonNullElse(organization.getWebsite().getName(), "null"));
-                            dataOutputStream.writeUTF(Objects.requireNonNullElse(organization.getWebsite().getUrl(), "null"));
+                        writeCollection(dos, ((OrganizationList) sectionValue).getOrganizationList(), (organization) -> {
+                            dos.writeUTF(organization.getWebsite().getName());
+                            dos.writeUTF(Objects.requireNonNullElse(organization.getWebsite().getUrl(), "null"));
 
-                            writeCollection(dataOutputStream, organization.getExperienceList(), (experience) -> {
-                                dataOutputStream.writeUTF(Objects.requireNonNullElse(experience.getTitle(), "null"));
-                                dataOutputStream.writeUTF(Objects.requireNonNullElse(experience.getDescription(), "null"));
-
-                                LocalDate startDate = experience.getStartDate();
-                                if (startDate != null) {
-                                    dataOutputStream.writeUTF(prepareLocalDate(experience.getStartDate()));
-                                } else {
-                                    dataOutputStream.writeUTF(prepareLocalDate(LocalDate.of(0, 1, 1)));
-                                }
-
-                                LocalDate endDate = experience.getEndDate();
-                                if (endDate != null) {
-                                    dataOutputStream.writeUTF(prepareLocalDate(experience.getEndDate()));
-                                } else {
-                                    dataOutputStream.writeUTF(prepareLocalDate(LocalDate.of(0, 1, 1)));
-                                }
+                            writeCollection(dos, organization.getExperienceList(), (experience) -> {
+                                dos.writeUTF(experience.getTitle());
+                                dos.writeUTF(Objects.requireNonNullElse(experience.getDescription(), "null"));
+                                dos.writeUTF(prepareLocalDate(experience.getStartDate()));
+                                dos.writeUTF(prepareLocalDate(experience.getEndDate()));
                             });
                         });
                         break;
@@ -71,18 +59,18 @@ public class DataStreamSerializer implements StreamSerializer {
 
     @Override
     public Resume doRead(InputStream inputStream) throws IOException {
-        try (DataInputStream dataInputStream = new DataInputStream(inputStream)) {
-            String uuid = dataInputStream.readUTF();
-            String fullName = dataInputStream.readUTF();
+        try (DataInputStream dis = new DataInputStream(inputStream)) {
+            String uuid = dis.readUTF();
+            String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
 
-            readCollection(dataInputStream, () -> {
-                String contactTypeName = dataInputStream.readUTF();
-                resume.addContact(ContactType.valueOf(contactTypeName), dataInputStream.readUTF());
+            readCollection(dis, () -> {
+                String contactTypeName = dis.readUTF();
+                resume.addContact(ContactType.valueOf(contactTypeName), dis.readUTF());
             });
-            readCollection(dataInputStream, () -> {
-                SectionType sectionType = SectionType.valueOf(dataInputStream.readUTF());
-                resume.addSection(sectionType, readSection(dataInputStream, sectionType));
+            readCollection(dis, () -> {
+                SectionType sectionType = SectionType.valueOf(dis.readUTF());
+                resume.addSection(sectionType, readSection(dis, sectionType));
             });
 
             return resume;
@@ -101,15 +89,15 @@ public class DataStreamSerializer implements StreamSerializer {
         void write(T item) throws IOException;
     }
 
-    private <T> void writeCollection(DataOutputStream dataOutputStream, Collection<T> collection, Writer<T> writer) throws IOException {
-        dataOutputStream.writeInt(collection.size());
+    private <T> void writeCollection(DataOutputStream dos, Collection<T> collection, Writer<T> writer) throws IOException {
+        dos.writeInt(collection.size());
         for (T item : collection) {
             writer.write(item);
         }
     }
 
-    private void readCollection(DataInputStream dataInputStream, Processor processor) throws IOException {
-        int size = dataInputStream.readInt();
+    private void readCollection(DataInputStream dis, Processor processor) throws IOException {
+        int size = dis.readInt();
         for (int i = 0; i < size; i++) {
             processor.process();
         }
@@ -126,26 +114,26 @@ public class DataStreamSerializer implements StreamSerializer {
         return list;
     }
 
-    private AbstractSection readSection(DataInputStream dataInputStream, SectionType sectionType) throws IOException {
+    private AbstractSection readSection(DataInputStream dis, SectionType sectionType) throws IOException {
         switch (sectionType) {
             case PERSONAL:
             case OBJECTIVE:
-                return new TextSection(dataInputStream.readUTF());
+                return new TextSection(dis.readUTF());
             case ACHIEVEMENT:
             case QUALIFICATION:
-                return new ListSection(readList(dataInputStream, dataInputStream::readUTF));
+                return new ListSection(readList(dis, dis::readUTF));
             case EXPERIENCE:
             case EDUCATION:
                 return new OrganizationList(
-                        readList(dataInputStream, () -> {
-                            Link homePage = new Link(revertFromFile(dataInputStream.readUTF()), revertFromFile(dataInputStream.readUTF()));
+                        readList(dis, () -> {
+                            Link homePage = new Link(revertFromFile(dis.readUTF()), revertFromFile(dis.readUTF()));
                             return new Organization(
                                     homePage,
-                                    readList(dataInputStream, () -> new Organization.Experience(
-                                            revertFromFile(dataInputStream.readUTF()),
-                                            revertFromFile(dataInputStream.readUTF()),
-                                            revertToLocalDate(dataInputStream.readUTF()),
-                                            revertToLocalDate(dataInputStream.readUTF())
+                                    readList(dis, () -> new Organization.Experience(
+                                            revertFromFile(dis.readUTF()),
+                                            revertFromFile(dis.readUTF()),
+                                            revertToLocalDate(dis.readUTF()),
+                                            revertToLocalDate(dis.readUTF())
                                     ))
                             );
                         }));

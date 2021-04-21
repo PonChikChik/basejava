@@ -55,7 +55,7 @@ public class ResumeTestData {
                                 "Автор проекта.",
                                 "Создание, организация и проведение Java онлайн проектов и стажировок.",
                                 LocalDate.parse("2013-10-01"),
-                                null
+                                LocalDate.now()
                         )
                 )
         );
