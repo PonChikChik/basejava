@@ -11,19 +11,23 @@ public class DeadLock {
 
     private static void deadLock(Object lock1, Object lock2) {
         new Thread(() -> {
-            System.out.println("wait " + lock1 + ". Thread name " + Thread.currentThread().getName());
+            System.out.println("wait " + lock1 + ". Thread name " + getThreadName());
             synchronized (lock1) {
-                System.out.println("hold " + lock1 + ". Thread name " + Thread.currentThread().getName());
+                System.out.println("hold " + lock1 + ". Thread name " + getThreadName());
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                System.out.println("wait " + lock2 + ". Thread name " + Thread.currentThread().getName());
+                System.out.println("wait " + lock2 + ". Thread name " + getThreadName());
                 synchronized (lock2) {
-                    System.out.println("hold " + lock2 + ". Thread name " + Thread.currentThread().getName());
+                    System.out.println("hold " + lock2 + ". Thread name " + getThreadName());
                 }
             }
         }).start();
+    }
+
+    private static String getThreadName() {
+        return Thread.currentThread().getName();
     }
 }
